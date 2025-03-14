@@ -21,7 +21,7 @@ This is a simple quiz application built with HTML, CSS, and JavaScript.
 
 # Usage
 
-Open '''index.html''' in your web browser to start the quiz.
+Open `index.html` in your web browser to start the quiz.
 Answer the questions and submit to see your score.
 Click the restart button to retake the quiz.
 
