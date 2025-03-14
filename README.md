@@ -43,3 +43,7 @@ Contributions are welcome! Please open an issue or submit a pull request for any
 # License
 
 This project is licensed under the MIT License.
+
+## Credit
+
+- Star animation [Keith Clark](https://codepen.io/keithclark/pen/DQdKbg)
