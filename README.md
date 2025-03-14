@@ -29,12 +29,12 @@ Click the restart button to retake the quiz.
 
 ## Event Listeners
 
-- '''submitBtn.onclick = showResults;:''' Sets up the event listener for the submit button to show results.
-- '''restartBtn.onclick = () => { ... }:''' Sets up the event listener for the restart button to hide the results and restart the quiz.
+- `submitBtn.onclick = showResults;:` Sets up the event listener for the submit button to show results.
+- `restartBtn.onclick = () => { ... }:` Sets up the event listener for the restart button to hide the results and restart the quiz.
 
 # Functions
 
-- '''showResults():''' Calculates and displays the quiz results.
+- `showResults():` Calculates and displays the quiz results.
 
 # Contributing
 
