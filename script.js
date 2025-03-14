@@ -274,7 +274,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Initialize quiz
   function init() {
-    console.log("Initializing quiz"); // Debug
+    console.log("Initializing quiz");
     const savedShuffled = localStorage.getItem(STORAGE_KEYS.SHUFFLED_QUESTIONS);
     const savedAnswers = localStorage.getItem(STORAGE_KEYS.USER_ANSWERS);
     const savedCurrent = localStorage.getItem(STORAGE_KEYS.CURRENT_QUESTION);
@@ -287,11 +287,11 @@ document.addEventListener("DOMContentLoaded", () => {
     answersContainer.style.display = "none";
 
     if (quizCompleted === "true") {
-      console.log("Quiz completed previously, starting new"); // Debug
+      console.log("Quiz completed previously, starting new");
       startNewQuiz();
       welcomePage.style.display = "block";
     } else if (savedShuffled && savedAnswers && savedCurrent) {
-      console.log("Restoring saved state"); // Debug
+      console.log("Restoring saved state");
       shuffledQuestions = JSON.parse(savedShuffled);
       userAnswers = JSON.parse(savedAnswers);
       currentQuestion = parseInt(savedCurrent);
@@ -299,17 +299,20 @@ document.addEventListener("DOMContentLoaded", () => {
       quizPage.style.display = "block";
       loadQuestion();
     } else {
-      console.log("No saved state, showing welcome page"); // Debug
+      console.log("No saved state, showing welcome page");
       welcomePage.style.display = "block";
       quizPage.style.display = "none";
     }
   }
 
-  // Start a new quiz
+  // Start a new quiz with 10 random questions
   function startNewQuiz() {
-    console.log("Starting new quiz"); // Debug
-    shuffledQuestions = questions.sort(() => Math.random() - 0.5);
-    userAnswers = new Array(shuffledQuestions.length).fill(null);
+    console.log("Starting new quiz");
+    // Create a copy of questions array and shuffle it
+    const shuffled = [...questions].sort(() => Math.random() - 0.5);
+    // Take first 10 questions
+    shuffledQuestions = shuffled.slice(0, 10);
+    userAnswers = new Array(10).fill(null); // Set length to 10
     currentQuestion = 0;
     saveState();
     localStorage.removeItem(STORAGE_KEYS.QUIZ_COMPLETED);
@@ -333,7 +336,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Load current question
   function loadQuestion() {
-    console.log("Loading question", currentQuestion); // Debug
+    console.log("Loading question", currentQuestion);
     const question = shuffledQuestions[currentQuestion];
     questionEl.textContent = question.question;
     optionsEl.innerHTML = "";
@@ -438,7 +441,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Event listeners
   startQuizBtn.onclick = () => {
-    console.log("Start quiz button clicked"); // Debug
+    console.log("Start quiz button clicked");
     welcomePage.style.display = "none";
     quizPage.style.display = "block";
     startNewQuiz();
