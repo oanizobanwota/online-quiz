@@ -7,7 +7,42 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <div class="quiz-container">
+    <div id="space">
+      <div class="stars"></div>
+      <div class="stars"></div>
+      <div class="stars"></div>
+      <div class="stars"></div>
+      <div class="stars"></div>
+    </div>
+
+    <!-- Welcome Page -->
+    <div id="welcome-page" class="welcome-container">
+      <div class="welcome-content">
+        <h1>Welcome to the Online Quiz</h1>
+        <p>
+          Test your knowledge with our interactive online quiz platform!
+          Features include:
+        </p>
+        <ul>
+          <li>
+            Multiple question types: Multiple Choice, True/False, and
+            Fill-in-the-Blank
+          </li>
+          <li>Randomized question order for each session</li>
+          <li>Progress saved even if you refresh the page</li>
+          <li>Instant scoring and detailed answer feedback</li>
+          <li>Responsive design for all devices</li>
+        </ul>
+        <p>
+          Click the button below to start your quiz. Your progress will be saved
+          until you complete the quiz or choose to restart.
+        </p>
+        <button id="start-quiz-btn">Start Quiz</button>
+      </div>
+    </div>
+
+    <!-- Quiz Page (hidden by default) -->
+    <div id="quiz-page" class="quiz-container" style="display: none">
       <h1>Online Quiz</h1>
       <div id="quiz">
         <div id="question-container">
@@ -30,13 +65,6 @@
           <div id="detailed-answers"></div>
         </div>
       </div>
-    </div>
-    <div id="space">
-      <div class="stars"></div>
-      <div class="stars"></div>
-      <div class="stars"></div>
-      <div class="stars"></div>
-      <div class="stars"></div>
     </div>
     <script src="script.js"></script>
   </body>

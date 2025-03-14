@@ -1,4 +1,4 @@
-// Questions (corrected the desert question)
+// Questions
 const questions = [
   {
     type: "truefalse",
@@ -15,7 +15,7 @@ const questions = [
     type: "multiple",
     question: "What is the largest hot desert in the world?",
     options: ["Sahara", "Arabian", "Gobi", "Kalahari"],
-    answer: "Sahara", // Correct for hot desert
+    answer: "Sahara",
   },
   {
     type: "truefalse",
@@ -236,204 +236,244 @@ let currentQuestion = 0;
 let userAnswers = [];
 let shuffledQuestions = [];
 
-// DOM elements
-const questionEl = document.getElementById("question");
-const optionsEl = document.getElementById("options");
-const prevBtn = document.getElementById("prev-btn");
-const nextBtn = document.getElementById("next-btn");
-const submitBtn = document.getElementById("submit-btn");
-const quizEl = document.getElementById("quiz");
-const resultEl = document.getElementById("result");
-const scoreEl = document.getElementById("score");
-const restartBtn = document.getElementById("restart-btn");
-const showAnswersBtn = document.getElementById("show-answers-btn");
-const answersContainer = document.getElementById("answers-container");
-const detailedAnswers = document.getElementById("detailed-answers");
+// Wait for DOM to be fully loaded
+document.addEventListener("DOMContentLoaded", () => {
+  // DOM elements
+  const welcomePage = document.getElementById("welcome-page");
+  const quizPage = document.getElementById("quiz-page");
+  const startQuizBtn = document.getElementById("start-quiz-btn");
+  const questionEl = document.getElementById("question");
+  const optionsEl = document.getElementById("options");
+  const prevBtn = document.getElementById("prev-btn");
+  const nextBtn = document.getElementById("next-btn");
+  const submitBtn = document.getElementById("submit-btn");
+  const quizEl = document.getElementById("quiz");
+  const resultEl = document.getElementById("result");
+  const scoreEl = document.getElementById("score");
+  const restartBtn = document.getElementById("restart-btn");
+  const showAnswersBtn = document.getElementById("show-answers-btn");
+  const answersContainer = document.getElementById("answers-container");
+  const detailedAnswers = document.getElementById("detailed-answers");
 
-// Storage keys
-const STORAGE_KEYS = {
-  SHUFFLED_QUESTIONS: "quiz_shuffled_questions",
-  USER_ANSWERS: "quiz_user_answers",
-  CURRENT_QUESTION: "quiz_current_question",
-  QUIZ_COMPLETED: "quiz_completed",
-};
-
-// Initialize quiz
-function init() {
-  // Check if there's saved state
-  const savedShuffled = localStorage.getItem(STORAGE_KEYS.SHUFFLED_QUESTIONS);
-  const savedAnswers = localStorage.getItem(STORAGE_KEYS.USER_ANSWERS);
-  const savedCurrent = localStorage.getItem(STORAGE_KEYS.CURRENT_QUESTION);
-  const quizCompleted = localStorage.getItem(STORAGE_KEYS.QUIZ_COMPLETED);
-
-  if (quizCompleted === "true") {
-    // If quiz was completed, start fresh
-    startNewQuiz();
-  } else if (savedShuffled && savedAnswers && savedCurrent) {
-    // Restore saved state
-    shuffledQuestions = JSON.parse(savedShuffled);
-    userAnswers = JSON.parse(savedAnswers);
-    currentQuestion = parseInt(savedCurrent);
-  } else {
-    // Start new quiz if no saved state
-    startNewQuiz();
+  // Check if critical elements exist
+  if (!welcomePage || !quizPage || !startQuizBtn) {
+    console.error("Required DOM elements not found. Check HTML IDs:");
+    console.error("welcome-page:", welcomePage);
+    console.error("quiz-page:", quizPage);
+    console.error("start-quiz-btn:", startQuizBtn);
+    return;
   }
 
-  loadQuestion();
-}
+  // Storage keys
+  const STORAGE_KEYS = {
+    SHUFFLED_QUESTIONS: "quiz_shuffled_questions",
+    USER_ANSWERS: "quiz_user_answers",
+    CURRENT_QUESTION: "quiz_current_question",
+    QUIZ_COMPLETED: "quiz_completed",
+  };
 
-// Start a new quiz
-function startNewQuiz() {
-  shuffledQuestions = questions.sort(() => Math.random() - 0.5);
-  userAnswers = new Array(shuffledQuestions.length).fill(null);
-  currentQuestion = 0;
-  // Save initial state
-  saveState();
-  // Clear completion flag
-  localStorage.removeItem(STORAGE_KEYS.QUIZ_COMPLETED);
-}
+  // Initialize quiz
+  function init() {
+    console.log("Initializing quiz"); // Debug
+    const savedShuffled = localStorage.getItem(STORAGE_KEYS.SHUFFLED_QUESTIONS);
+    const savedAnswers = localStorage.getItem(STORAGE_KEYS.USER_ANSWERS);
+    const savedCurrent = localStorage.getItem(STORAGE_KEYS.CURRENT_QUESTION);
+    const quizCompleted = localStorage.getItem(STORAGE_KEYS.QUIZ_COMPLETED);
 
-// Save current state to localStorage
-function saveState() {
-  localStorage.setItem(
-    STORAGE_KEYS.SHUFFLED_QUESTIONS,
-    JSON.stringify(shuffledQuestions)
-  );
-  localStorage.setItem(STORAGE_KEYS.USER_ANSWERS, JSON.stringify(userAnswers));
-  localStorage.setItem(
-    STORAGE_KEYS.CURRENT_QUESTION,
-    currentQuestion.toString()
-  );
-}
+    // Ensure initial display states
+    welcomePage.style.display = "none";
+    quizPage.style.display = "none";
+    resultEl.style.display = "none";
+    answersContainer.style.display = "none";
 
-// Load current question
-function loadQuestion() {
-  const question = shuffledQuestions[currentQuestion];
-  questionEl.textContent = question.question;
-  optionsEl.innerHTML = "";
+    if (quizCompleted === "true") {
+      console.log("Quiz completed previously, starting new"); // Debug
+      startNewQuiz();
+      welcomePage.style.display = "block";
+    } else if (savedShuffled && savedAnswers && savedCurrent) {
+      console.log("Restoring saved state"); // Debug
+      shuffledQuestions = JSON.parse(savedShuffled);
+      userAnswers = JSON.parse(savedAnswers);
+      currentQuestion = parseInt(savedCurrent);
+      welcomePage.style.display = "none";
+      quizPage.style.display = "block";
+      loadQuestion();
+    } else {
+      console.log("No saved state, showing welcome page"); // Debug
+      welcomePage.style.display = "block";
+      quizPage.style.display = "none";
+    }
+  }
 
-  // Update navigation buttons
-  prevBtn.disabled = currentQuestion === 0;
-  nextBtn.style.display =
-    currentQuestion === shuffledQuestions.length - 1 ? "none" : "block";
-  submitBtn.style.display =
-    currentQuestion === shuffledQuestions.length - 1 ? "block" : "none";
+  // Start a new quiz
+  function startNewQuiz() {
+    console.log("Starting new quiz"); // Debug
+    shuffledQuestions = questions.sort(() => Math.random() - 0.5);
+    userAnswers = new Array(shuffledQuestions.length).fill(null);
+    currentQuestion = 0;
+    saveState();
+    localStorage.removeItem(STORAGE_KEYS.QUIZ_COMPLETED);
+  }
 
-  // Render question based on type
-  switch (question.type) {
-    case "multiple":
-    case "truefalse":
-      question.options.forEach((option, index) => {
-        const div = document.createElement("div");
-        div.className = "option";
-        div.textContent = option;
-        div.onclick = () => selectOption(index, option);
-        if (userAnswers[currentQuestion] === option) {
-          div.classList.add("selected");
+  // Save current state to localStorage
+  function saveState() {
+    localStorage.setItem(
+      STORAGE_KEYS.SHUFFLED_QUESTIONS,
+      JSON.stringify(shuffledQuestions)
+    );
+    localStorage.setItem(
+      STORAGE_KEYS.USER_ANSWERS,
+      JSON.stringify(userAnswers)
+    );
+    localStorage.setItem(
+      STORAGE_KEYS.CURRENT_QUESTION,
+      currentQuestion.toString()
+    );
+  }
+
+  // Load current question
+  function loadQuestion() {
+    console.log("Loading question", currentQuestion); // Debug
+    const question = shuffledQuestions[currentQuestion];
+    questionEl.textContent = question.question;
+    optionsEl.innerHTML = "";
+
+    prevBtn.disabled = currentQuestion === 0;
+    nextBtn.style.display =
+      currentQuestion === shuffledQuestions.length - 1 ? "none" : "block";
+    submitBtn.style.display =
+      currentQuestion === shuffledQuestions.length - 1 ? "block" : "none";
+
+    switch (question.type) {
+      case "multiple":
+      case "truefalse":
+        question.options.forEach((option, index) => {
+          const div = document.createElement("div");
+          div.className = "option";
+          div.textContent = option;
+          div.onclick = () => selectOption(index, option);
+          if (userAnswers[currentQuestion] === option) {
+            div.classList.add("selected");
+          }
+          optionsEl.appendChild(div);
+        });
+        break;
+      case "fill":
+        const input = document.createElement("input");
+        input.type = "text";
+        input.placeholder = "Type your answer here";
+        if (userAnswers[currentQuestion]) {
+          input.value = userAnswers[currentQuestion];
         }
-        optionsEl.appendChild(div);
-      });
-      break;
-    case "fill":
-      const input = document.createElement("input");
-      input.type = "text";
-      input.placeholder = "Type your answer here";
-      if (userAnswers[currentQuestion]) {
-        input.value = userAnswers[currentQuestion];
+        input.oninput = (e) => {
+          userAnswers[currentQuestion] = e.target.value;
+          saveState();
+        };
+        optionsEl.appendChild(input);
+        break;
+    }
+  }
+
+  // Select option for multiple choice and true/false
+  function selectOption(index, option) {
+    userAnswers[currentQuestion] = option;
+    saveState();
+    loadQuestion();
+  }
+
+  // Calculate and show results
+  function showResults() {
+    let score = 0;
+    shuffledQuestions.forEach((question, index) => {
+      if (
+        userAnswers[index] &&
+        userAnswers[index].toLowerCase() === question.answer.toLowerCase()
+      ) {
+        score++;
       }
-      input.oninput = (e) => {
-        userAnswers[currentQuestion] = e.target.value;
-      };
-      optionsEl.appendChild(input);
-      break;
+    });
+
+    quizEl.style.display = "none";
+    resultEl.style.display = "block";
+    scoreEl.textContent = `You scored ${score} out of ${
+      shuffledQuestions.length
+    } (${((score / shuffledQuestions.length) * 100).toFixed(2)}%)`;
+    answersContainer.style.display = "none";
+
+    localStorage.setItem(STORAGE_KEYS.QUIZ_COMPLETED, "true");
   }
-}
 
-// Select option for multiple choice and true/false
-function selectOption(index, option) {
-  userAnswers[currentQuestion] = option;
-  loadQuestion();
-}
+  // Show detailed answers
+  function showDetailedAnswers() {
+    answersContainer.style.display = "block";
+    detailedAnswers.innerHTML = "";
 
-// Calculate and show results
-function showResults() {
-  let score = 0;
-  shuffledQuestions.forEach((question, index) => {
-    if (
-      userAnswers[index] &&
-      userAnswers[index].toLowerCase() === question.answer.toLowerCase()
-    ) {
-      score++;
-    }
-  });
+    shuffledQuestions.forEach((question, index) => {
+      const userAnswer = userAnswers[index] || "No answer";
+      const isCorrect =
+        userAnswer &&
+        userAnswer.toLowerCase() === question.answer.toLowerCase();
 
-  quizEl.style.display = "none";
-  resultEl.style.display = "block";
-  scoreEl.textContent = `You scored ${score} out of ${
-    shuffledQuestions.length
-  } (${((score / shuffledQuestions.length) * 100).toFixed(2)}%)`;
-  answersContainer.style.display = "none";
+      const answerDiv = document.createElement("div");
+      answerDiv.className = `answer-item ${
+        isCorrect ? "correct" : "incorrect"
+      }`;
 
-  // Mark quiz as completed
-  localStorage.setItem(STORAGE_KEYS.QUIZ_COMPLETED, "true");
-}
+      let answerContent = `
+          <p><strong>Question ${index + 1}:</strong> ${question.question}</p>
+          <p><strong>Your Answer:</strong> ${userAnswer}</p>
+          <p><strong>Correct Answer:</strong> ${question.answer}</p>
+        `;
 
-// Show detailed answers
-function showDetailedAnswers() {
-  answersContainer.style.display = "block";
-  detailedAnswers.innerHTML = "";
+      if (question.type === "multiple" || question.type === "truefalse") {
+        answerContent += `<p><strong>Options:</strong> ${question.options.join(
+          ", "
+        )}</p>`;
+      }
 
-  shuffledQuestions.forEach((question, index) => {
-    const userAnswer = userAnswers[index] || "No answer";
-    const isCorrect =
-      userAnswer && userAnswer.toLowerCase() === question.answer.toLowerCase();
+      answerDiv.innerHTML = answerContent;
+      detailedAnswers.appendChild(answerDiv);
+    });
+  }
 
-    const answerDiv = document.createElement("div");
-    answerDiv.className = `answer-item ${isCorrect ? "correct" : "incorrect"}`;
-
-    let answerContent = `
-        <p><strong>Question ${index + 1}:</strong> ${question.question}</p>
-        <p><strong>Your Answer:</strong> ${userAnswer}</p>
-        <p><strong>Correct Answer:</strong> ${question.answer}</p>
-      `;
-
-    if (question.type === "multiple" || question.type === "truefalse") {
-      answerContent += `<p><strong>Options:</strong> ${question.options.join(
-        ", "
-      )}</p>`;
-    }
-
-    answerDiv.innerHTML = answerContent;
-    detailedAnswers.appendChild(answerDiv);
-  });
-}
-
-// Event listeners
-prevBtn.onclick = () => {
-  if (currentQuestion > 0) {
-    currentQuestion--;
+  // Event listeners
+  startQuizBtn.onclick = () => {
+    console.log("Start quiz button clicked"); // Debug
+    welcomePage.style.display = "none";
+    quizPage.style.display = "block";
+    startNewQuiz();
     loadQuestion();
-  }
-};
+  };
 
-nextBtn.onclick = () => {
-  if (currentQuestion < shuffledQuestions.length - 1) {
-    currentQuestion++;
-    loadQuestion();
-  }
-};
+  prevBtn.onclick = () => {
+    if (currentQuestion > 0) {
+      currentQuestion--;
+      saveState();
+      loadQuestion();
+    }
+  };
 
-submitBtn.onclick = showResults;
+  nextBtn.onclick = () => {
+    if (currentQuestion < shuffledQuestions.length - 1) {
+      currentQuestion++;
+      saveState();
+      loadQuestion();
+    }
+  };
 
-showAnswersBtn.onclick = showDetailedAnswers;
+  submitBtn.onclick = showResults;
 
-restartBtn.onclick = () => {
-  resultEl.style.display = "none";
-  quizEl.style.display = "block";
-  answersContainer.style.display = "none";
-  startNewQuiz(); // Start fresh quiz
-  loadQuestion();
-};
+  showAnswersBtn.onclick = showDetailedAnswers;
 
-// Start the quiz
-init();
+  restartBtn.onclick = () => {
+    resultEl.style.display = "none";
+    quizEl.style.display = "block";
+    answersContainer.style.display = "none";
+    startNewQuiz();
+    welcomePage.style.display = "block";
+    quizPage.style.display = "none";
+  };
+
+  // Start the quiz
+  init();
+});
