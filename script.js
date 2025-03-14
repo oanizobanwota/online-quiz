@@ -250,12 +250,60 @@ const showAnswersBtn = document.getElementById("show-answers-btn");
 const answersContainer = document.getElementById("answers-container");
 const detailedAnswers = document.getElementById("detailed-answers");
 
+// Storage keys
+const STORAGE_KEYS = {
+  SHUFFLED_QUESTIONS: "quiz_shuffled_questions",
+  USER_ANSWERS: "quiz_user_answers",
+  CURRENT_QUESTION: "quiz_current_question",
+  QUIZ_COMPLETED: "quiz_completed",
+};
+
 // Initialize quiz
 function init() {
+  // Check if there's saved state
+  const savedShuffled = localStorage.getItem(STORAGE_KEYS.SHUFFLED_QUESTIONS);
+  const savedAnswers = localStorage.getItem(STORAGE_KEYS.USER_ANSWERS);
+  const savedCurrent = localStorage.getItem(STORAGE_KEYS.CURRENT_QUESTION);
+  const quizCompleted = localStorage.getItem(STORAGE_KEYS.QUIZ_COMPLETED);
+
+  if (quizCompleted === "true") {
+    // If quiz was completed, start fresh
+    startNewQuiz();
+  } else if (savedShuffled && savedAnswers && savedCurrent) {
+    // Restore saved state
+    shuffledQuestions = JSON.parse(savedShuffled);
+    userAnswers = JSON.parse(savedAnswers);
+    currentQuestion = parseInt(savedCurrent);
+  } else {
+    // Start new quiz if no saved state
+    startNewQuiz();
+  }
+
+  loadQuestion();
+}
+
+// Start a new quiz
+function startNewQuiz() {
   shuffledQuestions = questions.sort(() => Math.random() - 0.5);
   userAnswers = new Array(shuffledQuestions.length).fill(null);
   currentQuestion = 0;
-  loadQuestion();
+  // Save initial state
+  saveState();
+  // Clear completion flag
+  localStorage.removeItem(STORAGE_KEYS.QUIZ_COMPLETED);
+}
+
+// Save current state to localStorage
+function saveState() {
+  localStorage.setItem(
+    STORAGE_KEYS.SHUFFLED_QUESTIONS,
+    JSON.stringify(shuffledQuestions)
+  );
+  localStorage.setItem(STORAGE_KEYS.USER_ANSWERS, JSON.stringify(userAnswers));
+  localStorage.setItem(
+    STORAGE_KEYS.CURRENT_QUESTION,
+    currentQuestion.toString()
+  );
 }
 
 // Load current question
@@ -325,6 +373,9 @@ function showResults() {
     shuffledQuestions.length
   } (${((score / shuffledQuestions.length) * 100).toFixed(2)}%)`;
   answersContainer.style.display = "none";
+
+  // Mark quiz as completed
+  localStorage.setItem(STORAGE_KEYS.QUIZ_COMPLETED, "true");
 }
 
 // Show detailed answers
@@ -380,7 +431,8 @@ restartBtn.onclick = () => {
   resultEl.style.display = "none";
   quizEl.style.display = "block";
   answersContainer.style.display = "none";
-  init();
+  startNewQuiz(); // Start fresh quiz
+  loadQuestion();
 };
 
 // Start the quiz

@@ -16,6 +16,10 @@ body {
   position: relative;
   overflow-x: hidden;
   z-index: 0; /* Ensure body is behind quiz container */
+  /* Add flexbox for centering */
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 /* Quiz container remains white */
@@ -26,8 +30,8 @@ body {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   width: 90%;
   max-width: 600px;
-  margin: 12rem 27rem auto;
-  position: fixed;
+  margin: 20px auto;
+  position: relative;
   z-index: 1; /* Ensure it's above the background */
 }
 
@@ -142,7 +146,7 @@ input[type="text"] {
     radial-gradient(2px 2px at 160px 120px, #ddd, rgba(0, 0, 0, 0));
   background-repeat: repeat;
   background-size: 200px 200px;
-  animation: zoom 5s infinite;
+  animation: zoom 20s infinite;
   opacity: 0;
 }
 
@@ -169,17 +173,17 @@ input[type="text"] {
 
 @keyframes zoom {
   0% {
-    opacity: 0;
-    transform: scale(0.5);
+    opacity: 0.5;
+    transform: scale(1);
     animation-timing-function: ease-in;
   }
   85% {
     opacity: 1;
-    transform: scale(2.8);
+    transform: scale(1.8);
     animation-timing-function: linear;
   }
   100% {
-    opacity: 0;
-    transform: scale(3.5);
+    opacity: 0.2;
+    transform: scale(2.1);
   }
 }
