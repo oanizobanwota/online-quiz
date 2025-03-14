@@ -1,5 +1,28 @@
-// Questions
+// Questions (corrected the desert question)
 const questions = [
+  {
+    type: "truefalse",
+    question: "Is Nnamdi Kanu a citizen of United Kingdom?",
+    options: ["True", "False"],
+    answer: "True",
+  },
+  {
+    type: "fill",
+    question: "The formula for oxygen is ___",
+    answer: "O2",
+  },
+  {
+    type: "multiple",
+    question: "What is the largest hot desert in the world?",
+    options: ["Sahara", "Arabian", "Gobi", "Kalahari"],
+    answer: "Sahara", // Correct for hot desert
+  },
+  {
+    type: "truefalse",
+    question: "Indigenous People of Biafra was founded in 2012.",
+    options: ["True", "False"],
+    answer: "True",
+  },
   {
     type: "multiple",
     question: "What is the capital of France?",
@@ -207,29 +230,6 @@ const questions = [
     ],
     answer: "England, Scotland, Wales",
   },
-  {
-    type: "truefalse",
-    question: "Is Nnamdi Kanu a citizen of United Kingdom?",
-    options: ["True", "False"],
-    answer: "True",
-  },
-  {
-    type: "fill",
-    question: "The formula for oxygen is ___",
-    answer: "O2",
-  },
-  {
-    type: "multiple",
-    question: "What is the largest desert in the world?",
-    options: ["Sahara", "Arabian", "Gobi", "Kalahari"],
-    answer: "Sahara",
-  },
-  {
-    type: "truefalse",
-    question: "Indigenous People of Biafra was founded in 2012.",
-    options: ["True", "False"],
-    answer: "True",
-  },
 ];
 
 let currentQuestion = 0;
@@ -246,10 +246,12 @@ const quizEl = document.getElementById("quiz");
 const resultEl = document.getElementById("result");
 const scoreEl = document.getElementById("score");
 const restartBtn = document.getElementById("restart-btn");
+const showAnswersBtn = document.getElementById("show-answers-btn");
+const answersContainer = document.getElementById("answers-container");
+const detailedAnswers = document.getElementById("detailed-answers");
 
 // Initialize quiz
 function init() {
-  // Shuffle questions
   shuffledQuestions = questions.sort(() => Math.random() - 0.5);
   userAnswers = new Array(shuffledQuestions.length).fill(null);
   currentQuestion = 0;
@@ -305,29 +307,6 @@ function selectOption(index, option) {
   loadQuestion();
 }
 
-// Navigation
-prevBtn.onclick = () => {
-  if (currentQuestion > 0) {
-    currentQuestion--;
-    loadQuestion();
-  }
-};
-
-nextBtn.onclick = () => {
-  if (currentQuestion < shuffledQuestions.length - 1) {
-    currentQuestion++;
-    loadQuestion();
-  }
-};
-
-submitBtn.onclick = showResults;
-
-restartBtn.onclick = () => {
-  resultEl.style.display = "none";
-  quizEl.style.display = "block";
-  init();
-};
-
 // Calculate and show results
 function showResults() {
   let score = 0;
@@ -345,7 +324,64 @@ function showResults() {
   scoreEl.textContent = `You scored ${score} out of ${
     shuffledQuestions.length
   } (${((score / shuffledQuestions.length) * 100).toFixed(2)}%)`;
+  answersContainer.style.display = "none";
 }
+
+// Show detailed answers
+function showDetailedAnswers() {
+  answersContainer.style.display = "block";
+  detailedAnswers.innerHTML = "";
+
+  shuffledQuestions.forEach((question, index) => {
+    const userAnswer = userAnswers[index] || "No answer";
+    const isCorrect =
+      userAnswer && userAnswer.toLowerCase() === question.answer.toLowerCase();
+
+    const answerDiv = document.createElement("div");
+    answerDiv.className = `answer-item ${isCorrect ? "correct" : "incorrect"}`;
+
+    let answerContent = `
+        <p><strong>Question ${index + 1}:</strong> ${question.question}</p>
+        <p><strong>Your Answer:</strong> ${userAnswer}</p>
+        <p><strong>Correct Answer:</strong> ${question.answer}</p>
+      `;
+
+    if (question.type === "multiple" || question.type === "truefalse") {
+      answerContent += `<p><strong>Options:</strong> ${question.options.join(
+        ", "
+      )}</p>`;
+    }
+
+    answerDiv.innerHTML = answerContent;
+    detailedAnswers.appendChild(answerDiv);
+  });
+}
+
+// Event listeners
+prevBtn.onclick = () => {
+  if (currentQuestion > 0) {
+    currentQuestion--;
+    loadQuestion();
+  }
+};
+
+nextBtn.onclick = () => {
+  if (currentQuestion < shuffledQuestions.length - 1) {
+    currentQuestion++;
+    loadQuestion();
+  }
+};
+
+submitBtn.onclick = showResults;
+
+showAnswersBtn.onclick = showDetailedAnswers;
+
+restartBtn.onclick = () => {
+  resultEl.style.display = "none";
+  quizEl.style.display = "block";
+  answersContainer.style.display = "none";
+  init();
+};
 
 // Start the quiz
 init();

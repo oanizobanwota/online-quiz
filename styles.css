@@ -85,3 +85,24 @@ input[type="text"] {
   border: 1px solid #ddd;
   border-radius: 5px;
 }
+#answers-container {
+  margin-top: 2rem;
+  padding: 1rem;
+  background-color: #f8f8f8;
+  border-radius: 5px;
+}
+
+.answer-item {
+  margin: 1rem 0;
+  padding: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.correct {
+  background-color: #e6ffe6;
+}
+
+.incorrect {
+  background-color: #ffe6e6;
+}
